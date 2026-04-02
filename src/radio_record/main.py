@@ -36,13 +36,13 @@ def main(argv: list[str] | None = None):
         ),
     )
 
-    default_url = os.environ.get("RADIO_RECORD_URL", "http://192.168.1.50:8000/metal")
+    default_url = os.environ.get("RADIO_RECORD_URL")
 
     parser.add_argument(
         "url",
         nargs="?",
         default=default_url,
-        help="Stream URL (default: http://192.168.1.50:8000/metal, or set RADIO_RECORD_URL env var)",
+        help="Stream URL (or set RADIO_RECORD_URL env var)",
     )
     parser.add_argument(
         "-o", "--output",
@@ -68,6 +68,12 @@ def main(argv: list[str] | None = None):
         help="Seconds to wait before reconnecting after an error (default: 10)",
     )
     args = parser.parse_args(argv)
+
+    if args.url is None:
+        parser.error(
+            "No stream URL provided. Pass a URL argument or set the "
+            "RADIO_RECORD_URL environment variable."
+        )
 
     if args.output is None:
         parsed = urlparse(args.url)
@@ -115,5 +121,4 @@ def main(argv: list[str] | None = None):
     recorder.run()
 
 
-if __name__ == "__main__":
-    main()
+

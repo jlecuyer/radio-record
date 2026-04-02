@@ -48,6 +48,7 @@ class TestRecordSession:
         mock_stream.read_chunk = fake_read_chunk
 
         with patch("radio_record.recorder.ICYStream", return_value=mock_stream):
+            recorder._running = True
             try:
                 recorder._record_session()
             except ConnectionError:

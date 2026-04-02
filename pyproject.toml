@@ -15,7 +15,7 @@ dev = [
 ]
 
 [project.scripts]
-radio-record = "radio_record.__main__:main"
+radio-record = "radio_record.main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/radio_record"]

@@ -86,7 +86,7 @@ class Recorder:
         while self._running:
             try:
                 self._record_session()
-            except ConnectionError as exc:
+            except OSError as exc:
                 if not self._running:
                     break
                 logger.warning("Connection lost: %s", exc)
@@ -149,10 +149,10 @@ class Recorder:
                                 content_type=stream.info.content_type,
                                 is_partial=is_first_track,
                             )
+                            is_first_track = False
 
                         # 2) Start a new recording.
                         current_title = new_title
-                        is_first_track = False
                         current_file = tempfile.NamedTemporaryFile(
                             delete=False,
                             dir=str(self.output_dir),
