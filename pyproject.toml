@@ -1,0 +1,16 @@
+[project]
+name = "radio-record"
+version = "1.0.0"
+description = "Record and organize individual tracks from Icecast internet radio streams"
+requires-python = ">=3.11"
+dependencies = [
+    "mutagen>=1.47",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+radio-record = "radio_record.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
