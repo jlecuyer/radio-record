@@ -8,8 +8,27 @@ dependencies = [
     "python-dotenv>=1.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+]
+
 [project.scripts]
 radio-record = "radio_record.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/radio_record"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["radio_record"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
 
 [build-system]
 requires = ["hatchling"]

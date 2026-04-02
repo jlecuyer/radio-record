@@ -12,11 +12,11 @@ radio-record connects to Icecast internet radio streams, detects track boundarie
 # Install dependencies
 uv sync
 
-# Run (default stream: Radio Hyrule)
+# Run (default stream: http://192.168.1.50:8000/metal)
 uv run radio-record
 
 # Run with options
-uv run radio-record http://example.com:8000/listen -o ~/Music/output -v
+uv run radio-record http://example.com:8000/stream -o ~/Music/output -v
 
 # Run as module
 uv run python -m radio_record
@@ -50,4 +50,4 @@ Complete recordings replace partial ones. Partial never replaces complete. When 
 ## Environment
 
 - `RADIO_RECORD_URL` — optional env var for default stream URL
-- Default output directory is `./radio_record`
+- Default output directory is derived from the stream URL (e.g. `./192.168.1.50-metal` for `http://192.168.1.50:8000/metal`)

@@ -9,12 +9,12 @@ and automatic reconnection.
 ## Quick start
 
 ```bash
-# Install dependencies and run (Radio Hyrule is the default stream)
+# Install dependencies and run (default stream: http://192.168.1.50:8000/metal)
 uv sync
 uv run radio-record
 
 # Custom stream and output directory
-uv run radio-record http://listen.radiohyrule.com:8000/listen -o ~/Music/radio-hyrule
+uv run radio-record http://example.com:8000/stream -o ~/Music/output
 
 # Verbose logging
 uv run radio-record -v
@@ -94,7 +94,7 @@ usage: radio-record [-h] [-o OUTPUT] [-v] [--timeout TIMEOUT]
                     [url]
 
 positional arguments:
-  url                   Stream URL (default: Radio Hyrule)
+  url                   Stream URL (default: http://192.168.1.50:8000/metal)
 
 options:
   -h, --help            show this help message and exit

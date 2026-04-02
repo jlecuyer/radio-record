@@ -4,7 +4,7 @@ Usage::
 
     # With uv (recommended)
     uv run radio-record
-    uv run radio-record -o ~/Music/radio-hyrule -v
+    uv run radio-record -o ~/Music/output -v
 
     # Or as a module
     uv run python -m radio_record
@@ -13,9 +13,10 @@ Usage::
 import argparse
 import logging
 import os
+import re
 import signal
-import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
@@ -35,19 +36,19 @@ def main(argv: list[str] | None = None):
         ),
     )
 
-    default_url = os.environ.get("RADIO_RECORD_URL")
+    default_url = os.environ.get("RADIO_RECORD_URL", "http://192.168.1.50:8000/metal")
 
     parser.add_argument(
         "url",
         nargs="?",
         default=default_url,
-        help="Stream URL (or set RADIO_RECORD_URL env var)",
+        help="Stream URL (default: http://192.168.1.50:8000/metal, or set RADIO_RECORD_URL env var)",
     )
     parser.add_argument(
         "-o", "--output",
         type=Path,
-        default=Path("./radio_record"),
-        help="Output directory for recorded tracks (default: ./radio_record)",
+        default=None,
+        help="Output directory for recorded tracks (default: derived from stream URL)",
     )
     parser.add_argument(
         "-v", "--verbose",
@@ -68,8 +69,23 @@ def main(argv: list[str] | None = None):
     )
     args = parser.parse_args(argv)
 
-    if not args.url:
-        parser.error("stream URL is required (pass as argument or set RADIO_RECORD_URL in .env)")
+    if args.output is None:
+        parsed = urlparse(args.url)
+        # Use hostname without port; strip common TLD-like suffixes aren't
+        # needed — just use the hostname and path to build a readable name.
+        name = parsed.hostname or "radio"
+        # Strip common prefixes/suffixes that add no value
+        name = re.sub(r"^(www|stream|listen|radio)\.", "", name)
+        name = re.sub(r"\.(com|org|net|io|fm|cc|tv|gg)$", "", name)
+        # Append path segments (skip empty, generic, and redundant ones)
+        for segment in parsed.path.strip("/").split("/"):
+            if segment and segment.lower() not in ("listen", "stream", "radio") \
+                    and segment.lower() not in name.lower():
+                name += f"-{segment}"
+        # Sanitize to filesystem-safe characters
+        name = re.sub(r"[^\w\-.]", "-", name)
+        name = re.sub(r"-+", "-", name).strip("-")
+        args.output = Path(f"./{name or 'radio-record'}")
 
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,
