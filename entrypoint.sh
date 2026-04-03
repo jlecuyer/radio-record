@@ -7,8 +7,9 @@ UMASK=${UMASK:-022}
 groupadd -o -g "$PGID" radiouser 2>/dev/null
 useradd -o -u "$PUID" -g "$PGID" -d /app -s /bin/bash radiouser 2>/dev/null
 
-chown radiouser:radiouser /radio
+chown -R radiouser:radiouser /radio /app
+chmod -R 776 /radio
 
 umask "$UMASK"
 
-exec gosu radiouser uv run radio-record --verbose -o /radio
+exec gosu radiouser /app/.venv/bin/radio-record --verbose -o /radio
