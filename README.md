@@ -86,6 +86,49 @@ If the stream sends titles in `Artist - Title` format (common for internet
 radio), the recorder writes ID3v2 tags with the artist and title split
 correctly.  This uses the `mutagen` library.
 
+## Docker
+
+### Quick start
+
+```bash
+docker run -d \
+  --name radio-record \
+  -e RADIO_RECORD_URL=http://example.com:8000/stream \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -v /path/to/music:/radio \
+  flermshk/radio-record
+```
+
+### Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `RADIO_RECORD_URL` | *(empty)* | Stream URL to record |
+| `PUID` | `1000` | User ID for file ownership |
+| `PGID` | `1000` | Group ID for file ownership |
+| `UMASK` | `022` | File permission mask (022 = files `644`, dirs `755`) |
+
+### Unraid
+
+Set the following in your Docker template:
+
+- **Repository**: `flermshk/radio-record`
+- **RADIO_RECORD_URL**: your stream URL
+- **PUID**: `99` (Unraid `nobody`)
+- **PGID**: `100` (Unraid `users`)
+- **Volume mapping**: container path `/radio` → your host music directory
+
+### Build locally
+
+```bash
+docker build -t radio-record .
+docker run -d \
+  -e RADIO_RECORD_URL=http://example.com:8000/stream \
+  -v /path/to/music:/radio \
+  radio-record
+```
+
 ## CLI reference
 
 ```
